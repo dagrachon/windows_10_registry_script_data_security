@@ -11,3 +11,8 @@ Further informations about the registry keys and / or GPOs are found here:
 http://gpsearch.azurewebsites.net
 
 My used registry keys are commented in the script.
+
+Usage:
+
+Make a backup of your current registry configuration!!
+Download the .reg on to your local machine and double-click it (as administrator) to deploy the registry changes.
