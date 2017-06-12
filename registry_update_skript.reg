@@ -1,0 +1,257 @@
+Windows Registry Editor Version 5.00
+;------------------------------------------------------------------------ ;
+; Registry Skript to manipulate certain Windows 10 configurations.
+; 
+; The following configurations are registry keys for grouppolicy elements.
+; the main objective was to make sure, windows 10 is usable in a company environment 
+; (without having an active directory running)
+; and to minimize the data microsoft tries to collect.
+;
+; Warning! Manipulating the Windows Registry might corrupt your system! 
+; Always make sure to have backups of the source configuration!
+;
+; autor: 						dagrachon
+; github:						https://github.com/dagrachon/windows_10_registry_script_data_security
+; last date of modification:	2017-06-07
+;
+; further informations about the registry keys and / or GPOs are found here:
+; http://gpsearch.azurewebsites.net
+; ----------------------------------------------------------------------- ;
+;
+; Manipulation of certain data security options:
+;
+; possible values:
+; decimal: 0 => User is in control
+; decimal: 1 => Force Allow
+; decimal: 2 => Force Deny
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy]
+"LetAppsAccessAccountInfo"=dword:00000002
+"LetAppsAccessCallHistory"=dword:00000002
+"LetAppsAccessContacts"=dword:00000002
+"LetAppsAccessEmail"=dword:00000002
+"LetAppsAccessLocation"=dword:00000002
+"LetAppsAccessMessaging"=dword:00000002
+"LetAppsAccessMotion"=dword:00000002
+"LetAppsAccessCalendar"=dword:00000002
+"LetAppsAccessCamera"=dword:00000002
+"LetAppsAccessMicrophone"=dword:00000002
+"LetAppsAccessTrustedDevices"=dword:00000002
+"LetAppsAccessRadios"=dword:00000002
+"LetAppsSyncWithDevices"=dword:00000002
+
+; configure the level of telemetry data microsoft collects:
+; possible values:
+; decimal: 0 => 0 - Security [Enterprise Only]
+; decimal: 1 => 1 - Basic
+; decimal: 2 => 2 - Enhanced
+; decimal: 3 => 3 - Full
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DataCollection]
+"AllowTelemetry"=dword:00000001
+
+; disable experimental and preview builds:
+;
+; ValueName: EnableExperimentation
+; possible values:
+; decimal: 0 => Device settings only
+; decimal: 1 => Full experimentations
+;
+; ValueName: AllowBuildPreview
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds]
+"EnableExperimentation"=dword:00000000
+"AllowBuildPreview"=dword:00000000
+
+; prevent the usage of OneDrive for file storage:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\OneDrive]
+"DisableFileSyncNGSC"=dword:00000001
+
+; disable location informations usage
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors]
+"DisableLocation"=dword:00000001
+
+; disable certain gaming components
+;
+; turn off downloading of game information:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; turn off downloading game updates:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; Turn off tracking of last play time of games in the Games folder
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\GameUX]
+"DownloadGameInfo"=dword:00000000
+"GameUpdateOptions"=dword:00000000
+"ListRecentlyPlayed"=dword:00000000
+
+; disable certain search components (including cortana):
+;
+; allow cortana:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; allow search to use location:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; Don´t search the web or display web results in Search:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; Don´t search the web or display web results in Search over metered connections:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; do not allow web search:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search]
+"AllowCortana"=dword:00000000
+"AllowSearchToUseLocation"=dword:00000000
+"ConnectedSearchUseWeb"=dword:00000000
+"ConnectedSearchUseWebOverMeteredConnections"=dword:00000000
+"DisableWebSearch"=dword:00000001
+
+; Do not answer additional data requests from microsoft in response to a windows error reporting event:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting]
+"DontSendAdditionalData"=dword:00000001
+
+; turn off using the windows advertising id:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo]
+"DisabledByGroupPolicy"=dword:00000001
+
+; turn off automatic connecting to open wi-fi networks:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config]
+"AutoConnectAllowedOEM"=dword:00000000
+
+; Turn off Microsoft consumer experiences
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent]
+"DisableWindowsConsumerFeatures"=dword:00000001
+
+; ----------------------------------------------------------------------- ;
+; previous registry keys were more or less policy keys manipulating certain data security options.
+; the following registry keys manipulate a few system configurations, which i'd label as 'best case'
+; in the light of using windows 10 in a company environment mixed with development and business units.
+;
+; the options are adjusted to my certain company specifications.
+; you have to decide yourself if you want and need the following configurations.
+; ----------------------------------------------------------------------- ;
+; 
+; the used windows update options are used as seen because of another windows manipulation i implemented:
+; updates are automatically downloaded and installed everytime the windowsclient is going into shutdown / restart,
+; triggerd by a powershell script configured for execution at shutdown.
+; for more information go to: 
+; ----------------------------------------------------------------------- ;
+;
+; Allow non-administrators to receive update notifications:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate]
+"ElevateNonAdmins"=dword:00000000
+
+; Configure Automatic Updates:
+; possible values:
+;
+; ValueName: NoAutoUpdate
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; ValueName: AUOptions
+; decimal: 2 => 2 - Notify for download and auto install
+; decimal: 3 => 3 - Auto download and notify for install
+; decimal: 4 => 4 - Auto download and schedule the install
+; decimal: 5 => 5 - Allow local admin to choose setting
+
+; if AUOptions has the value of 4, you need to configure the schedule to install:
+; ValueName: ScheduledInstallDay 
+; decimal: 0 => 0 - Every day
+; decimal: 1 => 1 - Every Sunday
+; decimal: 2 => 2 - Every Monday
+; decimal: 3 => 3 - Every Tuesday
+; decimal: 4 => 4 - Every Wednesday
+; decimal: 5 => 5 - Every Thursday
+; decimal: 6 => 6 - Every Friday
+; decimal: 7 => 7 - Every Saturday
+;
+; ValueName: ScheduledInstallTime
+; decimal: 0 => 00:00
+; decimal: 1 => 01:00
+; decimal: 2 => 02:00
+; decimal: 3 => 03:00
+; decimal: 4 => 04:00
+; decimal: 5 => 05:00
+; decimal: 6 => 06:00
+; decimal: 7 => 07:00
+; decimal: 8 => 08:00
+; decimal: 9 => 09:00
+; decimal: 10 => 10:00
+; decimal: 11 => 11:00
+; decimal: 12 => 12:00
+; decimal: 13 => 13:00
+; decimal: 14 => 14:00
+; decimal: 15 => 15:00
+; decimal: 16 => 16:00
+; decimal: 17 => 17:00
+; decimal: 18 => 18:00
+; decimal: 19 => 19:00
+; decimal: 20 => 20:00
+; decimal: 21 => 21:00
+; decimal: 22 => 22:00
+; decimal: 23 => 23:00
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU]
+"AUOptions"=dword:00000002
+
+; Require use of fast startup:
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power]
+"HiberbootEnabled"=dword:00000000
+
+; enable execution of powershell scripts which are remote signed or local scripts:
+;
+; ValueName: EnableScripts
+; possible values:
+; decimal: 1 => enabled
+; decimal: 0 => disabled
+;
+; ValueName: ExecutionPolicy
+; possible values:
+; AllSigned 	=> Allow only signed scripts
+; RemoteSigned 	=> Allow local scripts and remote signed scripts
+; Unrestricted 	=> Allow all scripts
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\PowerShell]
+"EnableScripts"=dword:00000001
+"ExecutionPolicy"="RemoteSigned"
